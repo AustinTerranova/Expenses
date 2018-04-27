@@ -22,7 +22,7 @@ class ExpensesViewController: UIViewController {
         dateFormatter.timeStyle = .long
         dateFormatter.dateStyle = .long
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
@@ -56,7 +56,7 @@ class ExpensesViewController: UIViewController {
 
 
     func deleteExpense(at indexPath: IndexPath){
-        //let expense = expenses[indexPath.row]
+        let expense = expenses[indexPath.row]
 
         
         if let managedContext = expense.managedObjectContext{
@@ -65,8 +65,8 @@ class ExpensesViewController: UIViewController {
             do{
                 try managedContext.save()
                 
-                self.expenses.remove(at: indexPath)
-                expensesTableView.deleteRows(at: indexPath, with: .automatic)
+                self.expenses.remove(at: indexPath.row)
+                expensesTableView.deleteRows(at: [indexPath], with: .automatic)
             } catch {
                 print("delete failed")
                 
@@ -76,12 +76,12 @@ class ExpensesViewController: UIViewController {
     }
 
 
-
+}
 extension ExpensesViewController: UITableViewDataSource {
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return expenses.count
+           return expenses.count
         }
-    }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = expensesTableView.dequeueReusableCell(withIdentifier: "expenseCell", for: indexPath)
@@ -92,12 +92,14 @@ extension ExpensesViewController: UITableViewDataSource {
             cell.detailTextLabel?.text = dateFormatter.string(from: date)
         }
         return cell
-    }
-}
+        }
+    
+
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
                forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            deleteExpense( at :indexPath)
+            deleteExpense(at :indexPath)
+        }
     }
 }
 
@@ -106,6 +108,8 @@ extension ExpensesViewController: UITableViewDataSource {
             performSegue(withIdentifier: "showExpense", sender: self)
         }
     }
+
+
 
 
 
